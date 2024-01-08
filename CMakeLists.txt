@@ -17,7 +17,7 @@ project(${PROJECT_NAME})
 set(${PROJECT_NAME}_VERSION_MAJOR 1)
 set(${PROJECT_NAME}_VERSION_MINOR 0)
 
-find_package(SFML 2.5.1 COMPONENTS audio graphics window system REQUIRED)
+find_package(SFML 2.5.1 REQUIRED COMPONENTS audio graphics window system REQUIRED)
 
 include_directories(${PINE_SRC_INCLUDE_DIR})
 

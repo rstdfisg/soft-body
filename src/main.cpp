@@ -3,91 +3,81 @@
 #include <algorithm>
 #include <vector>
 #include <math.h>
+#include <random>
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 #include <SFML/System/Vector2.hpp>
-
+#include <SFML/Window/Mouse.hpp>
 #include "Node.hpp"
-
-template <typename T>
-T Vector2length(const sf::Vector2<T> &v)
-{
-    return std::sqrt(v.x * v.x + v.y * v.y);
-}
+#include "Cloth.hpp"
 
 int main()
 {
-
     const uint32_t windowWidth = 1920;
     const uint32_t windowHeight = 1080;
 
-    sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Window");
+    sf::ContextSettings settings;
+    settings.antialiasingLevel = 2;
 
-    sf::CircleShape shape(600.5f);
-
-    shape.setFillColor(sf::Color::Green);
-
-    Node *aa = new Node(0.1f, 0.1f);
-    Node *bb = new Node(20.1f, 20.1f);
-
-    aa->addNode(bb);
-    for (int i = 0; i < 5; i++)
-    {
-        aa->addNode(new Node(float(i) + 0.1f, float(i) + 0.1f));
-    }
-
-    std::cout << aa->x() << std::endl;
-    std::cout << aa->getNodeSize() << std::endl;
-
-    std::cout << bb << std::endl;
-
-    for (auto i = aa->begin(); i != aa->end(); i++)
-    {
-        std::cout << (*i)->x() << std::endl;
-        std::cout << *i << std::endl;
-    }
+    sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Window", sf::Style::Default, settings);
 
     sf::Clock clock;
+
     window.setActive(true);
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(120);
 
-    shape.setOrigin(0.0f, 0.0f);
-    shape.setPosition(100.0f, 100.0f);
-
-    double t = 0.0;
-    double dt = 1.0 / 60.0;
-
-    sf::VertexArray points(sf::Points, 1000 * 1000);
-
-    for (int i = 0; i < 1000; i++)
-    {
-        for (int j = 0; j < 1000; j++)
-        {
-            points[(1000 * i) + j].position = sf::Vector2f(i, j);
-        }
-    }
-
+    Cloth cloth = Cloth(120, 50, 10, 200, 0);
     while (window.isOpen())
     {
         // compute the FPS
-        float currentTime = clock.restart().asSeconds();
-        float fps = 1.0f / currentTime;
-        // std::cout << "fps : " << fps << std::endl;
+        // float currentTime = clock.restart().asSeconds();
+        // float fps = 1.0f / currentTime;
+        // printf("fps: %10f \n", fps);
 
+        sf::Time dt = sf::seconds(0.01f);
+        // sf::Time dt = deltaClock.restart();
+        // printf("dt: %10f \n", dt.asSeconds());
         sf::Event event;
+
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+            switch (event.type)
+            {
+
+            case sf::Event::Closed:
                 window.close();
+                break;
+
+            case sf::Event::MouseMoved:
+
+                // printf("x=%d ", event.mouseMove.x);
+                // printf("y=%d \n", event.mouseMove.y);
+                break;
+
+            case sf::Event::KeyPressed:
+                if (event.key.code == sf::Keyboard::Escape)
+                {
+                    window.close();
+                }
+                break;
+
+            case sf::Event::Resized:
+                printf("___ \n\n\n\n");
+            }
         }
 
-        // // Clear screen
+        // Clear screen
         window.clear();
 
-        // update particle
+        // if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        // {
+        //     sf::Vector2i mousePos = sf::Mouse::getPosition();
+        //     printf("%d, %d \n", mousePos.x, mousePos.y);
+        // }
 
-        // Draw the sprite
-        window.draw(points);
+        // update object and draw
+        cloth.update(&window, dt.asSeconds());
+        cloth.draw(window);
 
         // Update the window
         window.display();

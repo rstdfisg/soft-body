@@ -3,36 +3,47 @@
 #define NODE_H
 
 #include <vector>
-#include <list>
+#include "Edge.hpp"
+#include <SFML/System/Vector2.hpp>
 
 class Node
 {
+private:
+    Edge *edges[2] = {nullptr};
+    std::vector<Node *> neighbor;
+
+    sf::Vector2f pos;
+    sf::Vector2f prevPos;
+    sf::Vector2f initPos;
+
+    bool isPinned = false;
+    bool isSelected = false;
+
+    void keepInBox(int width, int height);
+
 public:
-    Node();
-    Node(float, float);
-    void setXY(float, float);
-    void addNode(Node *node);
-    int getNodeSize();
+    Node() = default;
+    Node(float x, float y);
     ~Node();
-    float &x();
-    float &y();
+
+    void addNode(Node *node);
+    void addEdge(Edge *edge, int index);
+
+    void setPosition(float x, float y);
+    const sf::Vector2f &getPosition();
+    const bool getPinned();
+    int getNeighborSize();
+
+    void pin();
+    void update(
+        float dt,
+        float drag,
+        const sf::Vector2f a,
+        int boxWidth,
+        int boxHeight,
+        const sf::RenderWindow *window);
     std::vector<Node *>::iterator begin();
     std::vector<Node *>::iterator end();
-
-private:
-    float nx;
-    float ny;
-
-    std::vector<Node *> neighbor;
-};
-
-class NodeController
-{
-public:
-    NodeController();
-
-private:
-    std::list<Node *> allNode;
 };
 
 #endif
