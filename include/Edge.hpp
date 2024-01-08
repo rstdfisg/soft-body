@@ -3,7 +3,7 @@
 #define EDGE_H
 
 #include <cstdint>
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 
 class Node;
 class Edge
@@ -28,6 +28,7 @@ public:
     void inActive();
     void update();
     void draw(sf::RenderWindow &window);
+    void disconnet();
 };
 
 #endif

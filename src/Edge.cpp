@@ -84,3 +84,8 @@ void Edge::draw(sf::RenderWindow &window)
 
     window.draw(lines, 2, sf::Lines);
 }
+
+void Edge::disconnet()
+{
+    isActive = false;
+}

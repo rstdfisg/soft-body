@@ -1,9 +1,6 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
-#include <vector>
-#include <math.h>
-#include <random>
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -24,9 +21,10 @@ int main()
     sf::Clock clock;
 
     window.setActive(true);
-    window.setFramerateLimit(120);
+    window.setFramerateLimit(200);
 
-    Cloth cloth = Cloth(120, 50, 10, 200, 0);
+    Cloth *pCloth = new Cloth(120, 50, 10, 200, 0);
+
     while (window.isOpen())
     {
         // compute the FPS
@@ -55,29 +53,31 @@ int main()
                 break;
 
             case sf::Event::KeyPressed:
+
                 if (event.key.code == sf::Keyboard::Escape)
                 {
+                    delete pCloth;
                     window.close();
                 }
                 break;
 
             case sf::Event::Resized:
-                printf("___ \n\n\n\n");
+                break;
             }
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+        {
+            delete pCloth;
+            pCloth = new Cloth(120, 50, 10, 200, 0);
         }
 
         // Clear screen
         window.clear();
 
-        // if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-        // {
-        //     sf::Vector2i mousePos = sf::Mouse::getPosition();
-        //     printf("%d, %d \n", mousePos.x, mousePos.y);
-        // }
-
         // update object and draw
-        cloth.update(&window, dt.asSeconds());
-        cloth.draw(window);
+        pCloth->update(&window, dt.asSeconds());
+        pCloth->draw(window);
 
         // Update the window
         window.display();

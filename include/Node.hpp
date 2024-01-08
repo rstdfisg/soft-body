@@ -10,7 +10,6 @@ class Node
 {
 private:
     Edge *edges[2] = {nullptr};
-    std::vector<Node *> neighbor;
 
     sf::Vector2f pos;
     sf::Vector2f prevPos;
@@ -24,15 +23,13 @@ private:
 public:
     Node() = default;
     Node(float x, float y);
-    ~Node();
+    ~Node() = default;
 
-    void addNode(Node *node);
     void addEdge(Edge *edge, int index);
 
     void setPosition(float x, float y);
     const sf::Vector2f &getPosition();
     const bool getPinned();
-    int getNeighborSize();
 
     void pin();
     void update(
@@ -42,8 +39,6 @@ public:
         int boxWidth,
         int boxHeight,
         const sf::RenderWindow *window);
-    std::vector<Node *>::iterator begin();
-    std::vector<Node *>::iterator end();
 };
 
 #endif

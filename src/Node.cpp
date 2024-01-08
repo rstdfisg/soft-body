@@ -8,14 +8,6 @@ Node::Node(float x, float y)
     pos = prevPos = initPos = sf::Vector2f(x, y);
 }
 
-Node::~Node()
-{
-    for (std::size_t i = 0; i < neighbor.size(); i++)
-    {
-        delete neighbor[i];
-    }
-}
-
 void Node::setPosition(float x, float y)
 {
     pos.x = x;
@@ -27,19 +19,9 @@ const sf::Vector2f &Node::getPosition()
     return pos;
 }
 
-void Node::addNode(Node *node)
-{
-    neighbor.push_back(node);
-}
-
 void Node::addEdge(Edge *edge, int index)
 {
     edges[index] = edge;
-}
-
-int Node::getNeighborSize()
-{
-    return neighbor.size();
 }
 
 const bool Node::getPinned()
@@ -63,7 +45,7 @@ void Node::update(float dt, float drag, const sf::Vector2f a, int boxWidth, int 
     sf::Vector2f cursorDiff = pos - mousePos;
     float cursorDist = cursorDiff.x * cursorDiff.x + cursorDiff.y * cursorDiff.y;
 
-    isSelected = cursorDist < 1000.0f;
+    isSelected = cursorDist < 2000.0f;
 
     for (Edge *edge : edges)
     {
@@ -75,6 +57,20 @@ void Node::update(float dt, float drag, const sf::Vector2f a, int boxWidth, int 
 
     bool leftPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
     bool rightPressed = sf::Mouse::isButtonPressed(sf::Mouse::Right);
+
+    if (leftPressed && isSelected)
+    {
+        prevPos -= cursorDiff * 0.1f;
+    }
+
+    if (rightPressed && isSelected)
+    {
+        for (Edge *edge : edges)
+        {
+            if (edge != nullptr)
+                edge->disconnet();
+        }
+    }
 
     // update node
     if (isPinned)
@@ -92,16 +88,6 @@ void Node::update(float dt, float drag, const sf::Vector2f a, int boxWidth, int 
     keepInBox(boxWidth, boxHeight);
 }
 
-std::vector<Node *>::iterator Node::begin()
-{
-    return neighbor.begin();
-}
-
-std::vector<Node *>::iterator Node::end()
-{
-    return neighbor.end();
-}
-
 void Node::keepInBox(int width, int height)
 {
     if (pos.x > width)
@@ -115,11 +101,17 @@ void Node::keepInBox(int width, int height)
         prevPos.x = pos.x;
     }
 
-    if (pos.y > height)
+    if (pos.y > 3 * height)
     {
-        pos.y = height;
-        prevPos.y = pos.y;
+        for (Edge *edge : edges)
+        {
+            if (edge != nullptr)
+                edge->disconnet();
+        }
+        // pos.y = height;
+        // prevPos.y = pos.y;
     }
+
     else if (pos.y < 0)
     {
         pos.y = 0;
