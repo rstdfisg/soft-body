@@ -16,14 +16,17 @@ int main()
     sf::ContextSettings settings;
     settings.antialiasingLevel = 2;
 
-    sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Window", sf::Style::Default, settings);
-
-    sf::Clock clock;
+    sf::RenderWindow window(
+        sf::VideoMode(windowWidth, windowHeight),
+        "Window",
+        sf::Style::Default,
+        settings);
 
     window.setActive(true);
-    window.setFramerateLimit(200);
+    window.setFramerateLimit(60);
 
     Cloth *pCloth = new Cloth(120, 50, 10, 200, 0);
+    sf::Clock clock;
 
     while (window.isOpen())
     {
@@ -33,8 +36,6 @@ int main()
         // printf("fps: %10f \n", fps);
 
         sf::Time dt = sf::seconds(0.01f);
-        // sf::Time dt = deltaClock.restart();
-        // printf("dt: %10f \n", dt.asSeconds());
         sf::Event event;
 
         while (window.pollEvent(event))
@@ -44,12 +45,6 @@ int main()
 
             case sf::Event::Closed:
                 window.close();
-                break;
-
-            case sf::Event::MouseMoved:
-
-                // printf("x=%d ", event.mouseMove.x);
-                // printf("y=%d \n", event.mouseMove.y);
                 break;
 
             case sf::Event::KeyPressed:
