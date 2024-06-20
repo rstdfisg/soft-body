@@ -1,3 +1,5 @@
+<img src="https://github.com/rstdfisg/soft-body/blob/main/demo.gif" width=50% height=50%>
+
 ## Required
 
 - CMAKE
